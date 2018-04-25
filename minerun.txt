@@ -1,0 +1,7 @@
+SET FLASK_CONFIG=development
+SET FLASK_APP=run.py
+SET DATABASE_URL=postgresql://postgres:deepdot123@localhost/flask_api
+
+
+apiry
+
