@@ -11,11 +11,6 @@ def validate_email(email):
         return False
     return True
 
-def check_json():
-    """Returns True if request is json"""
-    if request.get_json(silent=True) is None:
-        return False
-    return True
 
 def token_generator(current_user, expire_time=datetime.timedelta(minutes=30)):
     """Returns access token and response to User"""
