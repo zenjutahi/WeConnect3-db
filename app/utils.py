@@ -1,6 +1,33 @@
 import re, uuid
+from app.models import Business
+from flask import request, jsonify
+from functools import wraps
 
 # from app import mail
+
+def require_json(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if request.method in ("GET","DELETE"):
+            return f(*args, **kwargs)
+        # Check for json
+        if not check_json():
+            return jsonify(
+                {'message':'Bad Request. Request should be JSON format'}), 405
+        return f(*args, **kwargs)
+
+
+    return wrapper
+
+def check_json():
+    """Returns True if request is json"""
+    if request.get_json(silent=True) is None:
+        return False
+    return True
+
+def business_search(query):
+    pass
+
 
 
 def check_email(email):
@@ -21,8 +48,16 @@ def validate_auth_data_null(data):
 
 def validate_buss_data_null(data):
     """Returns Data if input is valid else None"""
-    match = data.trim().isEmpty()
+    data = data.split()
+    match = ' '.join(data)
     if not match:
         return None
     else:
-        return data
+        return match
+
+def check_blank_key(data, required_fields):
+
+    for field in required_fields:
+        if not data.get(field):
+            assert 0, field + ' is Missing'
+    return data
