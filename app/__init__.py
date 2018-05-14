@@ -1,6 +1,7 @@
 # third-party imports
 from flask import jsonify
 from flask_api import FlaskAPI
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
@@ -11,6 +12,7 @@ from instance.config import app_config
 # db variable initialization
 db = SQLAlchemy()
 jwt = JWTManager()
+mail = Mail()
 
 
 # Initialize the app
@@ -23,6 +25,7 @@ def create_app(config_name):
 
     db.init_app(app)
     jwt.init_app(app)
+    mail.init_app(app)
 
     from app import models
 
@@ -51,7 +54,7 @@ def create_app(config_name):
     def server_error(error):
         """Error handler for wrong method to an endpoint"""
         return jsonify({'message':'Database connection failed! Try Again'}), 500
-        
+
     @jwt.token_in_blacklist_loader
     def check_token_in_blacklist(decrypted_token):
         """Check if token is blacklisted"""
@@ -62,6 +65,3 @@ def create_app(config_name):
         return blacklist.revoked
 
     return app
-
-
-
