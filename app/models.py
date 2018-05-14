@@ -35,8 +35,8 @@ class MyBaseClass(db.Model):
         db.session.commit()
 
 class User(MyBaseClass):
-    """ 
-    This class represents the User table 
+    """
+    This class represents the User table
     """
 
     __tablename__ = 'users'
@@ -90,6 +90,15 @@ class Business(MyBaseClass):
         self.location = location
         self.user_id = user_id
 
+    def accesible(self):
+        """ Returns jsonified data """
+        return {
+        "Business name" : self.name,
+        "Business description": self.description,
+        "Business category": self.category,
+        "Business location": self.location
+        }
+
     def __repr__(self):
         return '<Business: {}>'.format(self.name)
 
@@ -104,14 +113,23 @@ class Review(MyBaseClass):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    business_id = db.Column(db.Integer, db.ForeignKey('businesses.id'), nullable=False)
     value = db.Column(db.String(200), nullable=False)
     comments = db.Column(db.String(200))
 
-    def __init__(self, value, comments, user_id):
+    def __init__(self, value, comments, business_id, user_id):
         """Initialize the review"""
         self.value = value
         self.comments = comments
         self.user_id = user_id
+        self.business_id = business_id
+
+    def accesible(self):
+        """ Returns jsonified data """
+        return {
+        "Review value" : self.value,
+        "Review comment": self.comments
+        }
 
     def __repr__(self):
         return '<Review: {}>'.format(self.value)
@@ -138,10 +156,3 @@ class TokenBlacklist(MyBaseClass):
 
     def __repr__(self):
         return '<Token: {}>'.format(self.token)
-
-
-
-
-
-
-
