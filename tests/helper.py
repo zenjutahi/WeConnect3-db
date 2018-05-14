@@ -20,26 +20,27 @@ class BaseTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         self.header = {'Content-Type': 'application/json'}
 
-        self.reg_data = {'email': 'user@test.com', 'username': 'stephen',
-                         'password': 'Test1234'}
-        self.passwords = {'old_password': 'Test1234',
-                          'new_password': 'Test12345'}
-        self.reg_res = self.make_request('/api/v1/register', 'post',
+        self.reg_data = {'email': 'jeff@try.com', 'username': 'Zenjutahi',
+                         'first_name': 'mutahi', 'password': 'Test1234'}
+        self.passwords = {'old_password': 'busstest123'',
+                          'new_password': 'buss2test123''}
+        self.reg_res = self.requester_method('/api/auth/register', 'post',
                                          data=self.reg_data)
         self.get_login_token(self.reg_data)
         self.business_data = {'name': 'Andela', 'category': 'IT',
                               'location': 'Nairobi'}
-        self.biz_res = self.make_request('/api/v1/businesses', 'post',
+        self.biz_res = self.make_request('/api/auth/businesses', 'post',
                                          data=self.business_data)
-        self.password = {'password': 'Test1234'}
+        self.password = {'password': 'busstest123'}
 
-        self.review_data = {'review': 'Andela is the BEST. TIA'}
+        self.review_data = {'value': '4.5',
+                            'comments': 'I loved your services'}
         with self.app.app_context():
             self.expires = datetime.timedelta(minutes=2)
-            self.token = create_access_token(identity='notuser@mail.com',
+            self.token = create_access_token(identity='wrong@mail.com',
                                              expires_delta=self.expires)
 
-    def make_request(self, url, method, data):
+    def requester_method(self, url, method, data):
         """Make a request to the given url with the given method"""
         data = json.dumps(data)
         if method == 'put':
@@ -50,7 +51,7 @@ class BaseTestCase(unittest.TestCase):
                                       headers=self.header, data=data)
         return self.client.post(path=url, headers=self.header, data=data)
 
-    def automate(self, url, method='post', jsons=True, **kwargs):
+    def request_logic(self, url, method='post', jsons=True, **kwargs):
         """Make the test to a given url"""
         data = kwargs['data']
         if not jsons:
@@ -68,7 +69,7 @@ class BaseTestCase(unittest.TestCase):
 
     def get_login_token(self, data):
         """Get the access token and add it to the header"""
-        login_res = self.make_request('/api/v1/login', 'post', data=data)
+        login_res = self.requester_method('/api/auth/login', 'post', data=data)
         result = json.loads(login_res.data.decode())
         self.header['Authorization'] = 'Bearer ' + result['access_token']
         return result
