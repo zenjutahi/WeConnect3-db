@@ -15,8 +15,6 @@ def require_json(f):
             return jsonify(
                 {'message':'Bad Request. Request should be JSON format'}), 405
         return f(*args, **kwargs)
-
-
     return wrapper
 
 def check_json():
@@ -39,7 +37,7 @@ def check_email(email):
 
 def validate_auth_data_null(data):
     """Returns data if input is valid else none"""
-    pattern = r'^[a-zA-Z_ ]+[\d\w]{3,}'
+    pattern = r'^[a-zA-Z\d_ ]+[\d\w]{3,}'
     match = re.search(pattern, data)
     if not match:
         return None
