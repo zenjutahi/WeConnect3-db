@@ -1,6 +1,13 @@
 language: python
+env:
+  FLASK_CONFIG='testing'
+  SECRET_KEY="mysupersupersecretkey"
+  EMAIL="hcbullss@gmail.com"
+  PASSWORD="hc_bullss"
 python:
   - "3.5.0"
+services:
+  -postgresql
 install:
   - pip install nose
   - pip install -r requirements.txt
