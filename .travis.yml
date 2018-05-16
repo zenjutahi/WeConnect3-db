@@ -1,0 +1,19 @@
+language: python
+python:
+  - "3.5.0"
+install:
+  - pip install nose
+  - pip install -r requirements.txt
+  - pip install coveralls
+before-script:
+  - psql "CREATE DATABASE test_db;"
+script:
+  - nosetests --exe -v --with-coverage --cover-package=app
+  - coveralls
+after_success:
+ - coveralls
+notifications:
+  slack:
+    on_success: never
+    on_failure: never
+  email: false
