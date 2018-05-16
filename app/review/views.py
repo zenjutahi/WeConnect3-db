@@ -50,7 +50,8 @@ def make_businessreview(business_id):
             {'message': 'Enter an existing business'}), 409
     all_reviews = Review.get_all(Review)
     func = lambda review: review.accesible() if review.business_id==business_id else False
-    all_reviews = map(func, all_reviews)
+    all_reviews = filter(lambda item: item and True, map(func, all_reviews))
+
     # review_list = []
     # for review in all_reviews:
     #     if review.business_id == business_id:
