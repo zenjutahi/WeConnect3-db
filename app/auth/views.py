@@ -45,8 +45,6 @@ def register():
 
 
 
-
-
 @auth.route('/login', methods=['POST'])
 @require_json
 def login():
