@@ -6,10 +6,8 @@ import unittest
 import json
 import datetime
 from flask_jwt_extended import create_access_token
-from app import create_app
-# # from app.auth.views import users
-# from app.business.views import store
-from app.models import Business
+from app import create_app, db
+from app.models import Business, User
 
 
 class BaseTestCase(unittest.TestCase):
@@ -17,28 +15,31 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         """Set up test variables"""
         self.app = create_app(config_name="testing")
-        self.client = self.app.test_client()
+        with self.app.app_context():
+            self.client = self.app.test_client()
+            self.expires = datetime.timedelta(minutes=2)
+            self.token = create_access_token(identity='wrong@mail.com',expires_delta=self.expires)
+            db.drop_all()
+            db.create_all()
         self.header = {'Content-Type': 'application/json'}
-
         self.reg_data = {'email': 'jeff@try.com', 'username': 'Zenjutahi',
                          'first_name': 'mutahi', 'password': 'Test1234'}
-        self.passwords = {'old_password': 'busstest123'',
-                          'new_password': 'buss2test123''}
+        self.passwords = {'old_password': 'Test1234',
+                          'new_password': 'busstest123'}
         self.reg_res = self.requester_method('/api/auth/register', 'post',
                                          data=self.reg_data)
         self.get_login_token(self.reg_data)
-        self.business_data = {'name': 'Andela', 'category': 'IT',
-                              'location': 'Nairobi'}
-        self.biz_res = self.make_request('/api/auth/businesses', 'post',
+        self.business_data = {'name': 'a2Z Ict','description':'we do this and that',
+                              'category': 'Technology',  'location': 'Mombasa'}
+        self.biz_res = self.requester_method('/api/businesses', 'post',
                                          data=self.business_data)
         self.password = {'password': 'busstest123'}
 
         self.review_data = {'value': '4.5',
                             'comments': 'I loved your services'}
-        with self.app.app_context():
-            self.expires = datetime.timedelta(minutes=2)
-            self.token = create_access_token(identity='wrong@mail.com',
-                                             expires_delta=self.expires)
+
+
+
 
     def requester_method(self, url, method, data):
         """Make a request to the given url with the given method"""
@@ -54,15 +55,10 @@ class BaseTestCase(unittest.TestCase):
     def request_logic(self, url, method='post', jsons=True, **kwargs):
         """Make the test to a given url"""
         data = kwargs['data']
-        if not jsons:
-            del self.header['Content-Type']
-            message = 'The Request should be JSON format'
-            code = 400
-        else:
-            message = kwargs['msg']
-            code = kwargs['code']
+        message = kwargs['msg']
+        code = kwargs['code']
 
-        res = self.make_request(url, method, data)
+        res = self.requester_method(url, method, data)
         result = json.loads(res.data.decode())
         self.assertEqual(result['message'], message)
         self.assertEqual(res.status_code, code)
@@ -75,7 +71,8 @@ class BaseTestCase(unittest.TestCase):
         return result
 
     def tearDown(self):
-        """teardown all initialized variables"""
-        users.clear()
-        store.clear()
-        Business.this_id = 0
+        """teardown all initialized variables."""
+        with self.app.app_context():
+            # drop all tables
+            db.session.remove()
+            db.drop_all()
