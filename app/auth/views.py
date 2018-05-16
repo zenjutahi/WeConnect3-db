@@ -19,7 +19,7 @@ def register():
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
-        return jsonify({"message": msg})
+        return jsonify({"message": msg}), 422
 
     email = validate_auth_data_null(data.get('email'))
     username = validate_auth_data_null(data.get('username'))
@@ -55,7 +55,7 @@ def login():
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
-        return jsonify({"message": msg})
+        return jsonify({"message": msg}), 422
     email = validate_auth_data_null(data.get('email'))
     password = validate_auth_data_null(data.get('password'))
 
@@ -74,7 +74,7 @@ def login():
     return token_generator(current_user)
 
 
-@auth.route('/logout', methods=['DELETE'])
+@auth.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
     """ logout a user """
@@ -95,7 +95,7 @@ def change_password():
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
-        return jsonify({"message": msg})
+        return jsonify({"message": msg}), 422
     old_password = validate_auth_data_null(data.get('old_password'))
     new_password = validate_auth_data_null(data.get('new_password'))
     jti = get_raw_jwt()['jti']
@@ -107,15 +107,15 @@ def change_password():
     user = User.query.filter_by(id=current_user).first()
     if not user.verify_password(old_password):
         return jsonify(
-                {'message':'Enter Valid Password: Old password is wrong'}), 400
+                {'message':'Enter Valid Password: Old password is wrong'}), 401
     User.update(User, current_user, password=new_password)
     tokenlist = TokenBlacklist(token=jti, user_identity=current_user)
     tokenlist.save()
     return jsonify(
-            {'message':'Password Successfully Changed'}), 200
+            {'message':'Password Successfully Changed'}), 201
 
 
-@auth.route('/resetpassword', methods=['PUT'])
+@auth.route('/resetpassword', methods=['POST'])
 @require_json
 def reset_password():
     try:
@@ -123,7 +123,7 @@ def reset_password():
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
-        return jsonify({"message": msg})
+        return jsonify({"message": msg}), 422
     email = validate_auth_data_null(data.get('email'))
     if not email:
         return jsonify(
@@ -140,4 +140,4 @@ def reset_password():
                   recipients=[email])
     mail.send(msg)
     return jsonify(
-            {'message':'Check your email address for new password'}), 200
+            {'message':'Check your email address for new password'}), 201
