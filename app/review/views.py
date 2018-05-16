@@ -25,18 +25,18 @@ def make_businessreview(business_id):
             data = check_blank_key(request.get_json(), required_fields)
         except AssertionError as err:
             msg = err.args[0]
-            return jsonify({"message": msg})
+            return jsonify({"message": msg}), 422
         value = validate_buss_data_null(data['value'])
         comments = validate_buss_data_null(data['comments'])
-        if current_user == business_to_review.user_id:
-            return jsonify({'message': 'You can not review your own business'}), 403
         if not value or not comments:
             return jsonify(
                 {'message': 'You have to enter a review value and comment'}), 400
+        if current_user == business_to_review.user_id:
+            return jsonify({'message': 'You can not review your own business'}), 403
         new_review=Review(value=value, comments=comments,business_id=business_id,
                             user_id=current_user)
         new_review.save()
-        display_review=Review.query.filter_by(comments=comments).first()
+        display_review=Review.query.filter_by(id=new_review.id).first()
         info=display_review.accesible()
 
         return jsonify({'message': 'You have successfully created a review',
@@ -49,10 +49,12 @@ def make_businessreview(business_id):
         return jsonify(
             {'message': 'Enter an existing business'}), 409
     all_reviews = Review.get_all(Review)
-    review_list = []
-    for review in all_reviews:
-        if review.business_id == business_id:
-            review_info = review.accesible()
-            review_list.append(review_info)
+    func = lambda review: (review.accesible()) if review.business_id==business_id else False
+    all_reviews = map(func, all_reviews)
+    # review_list = []
+    # for review in all_reviews:
+    #     if review.business_id == business_id:
+    #         review_info = review.accesible()
+    #         review_list.append(review_info)
     return jsonify({'message': 'Business reviews succesfully retreaved',
-                    'Reviews are:': review_list}), 201
+                    'Reviews are:': list(all_reviews)}), 201
