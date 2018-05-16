@@ -1,10 +1,8 @@
 from flask import request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
 
 import datetime
 from . import auth
 from flask_jwt_extended import get_raw_jwt, jwt_required, get_jwt_identity
-from flask_bcrypt import Bcrypt
 from flask_mail import Message
 from app import mail
 from app.models import User, TokenBlacklist
