@@ -33,7 +33,9 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = DATABASE_URL="postgresql://postgres:deepdot123@localhost/test_db"
+    SQLALCHEMY_DATABASE_URI ="postgresql://postgres:deepdot123@localhost/test_db"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_ENABLED = False
     DEBUG = True
 
 class ProductionConfig(Config):
@@ -41,8 +43,7 @@ class ProductionConfig(Config):
     Production configurations
     """
 
-    DEBUG = False
-    Testing = False
+    TESTING = False
 
 app_config = {
     'testing': TestingConfig,
