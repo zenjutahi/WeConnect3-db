@@ -49,12 +49,14 @@ def make_businessreview(business_id):
         return jsonify(
             {'message': 'Enter an existing business'}), 409
     all_reviews = Review.get_all(Review)
+    """" using lambda and map """
     func = lambda review: review.accesible() if review.business_id==business_id else False
     all_reviews = filter(lambda item: item and True, map(func, all_reviews))
 
     # review_list = []
     # for review in all_reviews:
     #     if review.business_id == business_id:
+    #         print('there')
     #         review_info = review.accesible()
     #         review_list.append(review_info)
     return jsonify({'message': 'Business reviews succesfully retreaved',
