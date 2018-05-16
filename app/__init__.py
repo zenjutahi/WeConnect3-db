@@ -40,21 +40,6 @@ def create_app(config_name):
 
     from app.models import TokenBlacklist
 
-    @app.errorhandler(400)
-    def bad_request(error):
-        """Error handler for a bad request"""
-        return jsonify({'message':'The Server did not understand the request'}), 400
-
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        """Error handler for wrong method to an endpoint"""
-        return jsonify({'message':'Method not allowed'}), 405
-
-    @app.errorhandler(500)
-    def server_error(error):
-        """Error handler for wrong method to an endpoint"""
-        return jsonify({'message':'Database connection failed! Try Again'}), 500
-
     @jwt.token_in_blacklist_loader
     def check_token_in_blacklist(decrypted_token):
         """Check if token is blacklisted"""
