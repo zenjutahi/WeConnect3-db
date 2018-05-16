@@ -7,7 +7,7 @@ from flask_jwt_extended import get_raw_jwt, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from app.models import Business
 from app.view_helpers import validate_email,token_generator
-from app.utils import check_blank_key, validate_buss_data_null, require_json
+from app.utils import check_blank_key, validate_buss_data_null, require_json, business_filter, business_search
 
 
 
@@ -25,7 +25,7 @@ def registerBusiness():
             data = check_blank_key(request.get_json(), required_fields)
         except AssertionError as err:
             msg = err.args[0]
-            return jsonify({"message": msg})
+            return jsonify({"message": msg}), 422
         # Check if user entered a name and location
         name = validate_buss_data_null(data['name'])
         description = validate_buss_data_null(data['description'])
@@ -55,12 +55,10 @@ def registerBusiness():
 
     # Get all businesses
     all_businesses = Business.get_all(Business)
-    business_list = []
-    for business in all_businesses:
-        business_info = business.accesible()
-        business_list.append(business_info)
+    func = lambda business: business.accesible()
+    all_businesses = map(func, all_businesses)
     return jsonify({'message': 'These are the businesses',
-                    'businesses': business_list
+                    'businesses': list(all_businesses)
                     }), 200
 
 
@@ -94,7 +92,7 @@ def editBusiness(business_id):
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
-        return jsonify({"message": msg})
+        return jsonify({"message": msg}), 422
     # Check for null user data
     name = validate_buss_data_null(data['name'])
     description = validate_buss_data_null(data['description'])
@@ -118,7 +116,30 @@ def editBusiness(business_id):
                     }), 201
 
 
-@business.route('/businesses/filters', methods=['GET'])
+@business.route('/businesses/filter', methods=['GET'])
 def filtersBusiness():
-    filter_by = request.args.get('category', 'location', type=str)
-    pass
+    filter_params = request.args
+    try:
+        result = (business_filter(filter_params))
+    except ValueError as error:
+        return jsonify({"message": 'Invalid pagination limit or page'})
+
+    func = lambda business: business.accesible()
+    result = map(func, result)
+    return jsonify({'Filter result': list(result),
+                    'message': 'Businesses successfully filtered'
+                    }), 201
+
+@business.route('/businesses/search', methods=['GET'])
+def searchBusiness():
+    search_params = request.args
+    try:
+        result = (business_search(search_params))
+    except ValueError as error:
+        return jsonify({"message": 'Invalid pagination limit or page'})
+
+    func = lambda business: business.accesible()
+    result = map(func, result)
+    return jsonify({'Search result': list(result),
+                    'message': "Here's the search result"
+                    }), 201
