@@ -31,7 +31,6 @@ class MyBaseClass(db.Model):
             if column == 'password':
                 kwargs[column] = Bcrypt().generate_password_hash(kwargs[column]).decode()
             setattr(row, column, kwargs[column])
-        print('helollloe')
         db.session.commit()
 
 class User(MyBaseClass):
