@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/zenjutahi/WeConnect_Challenge3.svg?branch=master)](https://travis-ci.org/zenjutahi/WeConnect_Challenge3)
-[![Coverage Status](https://coveralls.io/repos/github/zenjutahi/WeConnect_Challenge3/badge.svg?branch=master)](https://coveralls.io/github/zenjutahi/WeConnect_Challenge3?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/028dfff430134ddab3452cb8c1bcae28)](https://www.codacy.com/app/zenjutahi/WeConnect_Challenge3?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zenjutahi/WeConnect_Challenge3&amp;utm_campaign=Badge_Grade)
+[![Coverage Status](https://coveralls.io/repos/github/zenjutahi/WeConnect_Challenge3/badge.svg?branch=master)](https://coveralls.io/github/zenjutahi/WeConnect_Challenge3?branch=master)
 ____
 ## Getting Started
 **My project is broken down into 4 parts.**
