@@ -13,7 +13,7 @@ def require_json(f):
         # Check for json
         if not check_json():
             return jsonify(
-                {'message': 'Bad Request. Request should be JSON format'}), 422
+                {'message': 'Bad Request. Request should be JSON format'}), 400
         ret_val = f(*args, **kwargs)
         return ret_val
     return wrapper
