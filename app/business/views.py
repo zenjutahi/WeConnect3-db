@@ -6,10 +6,8 @@ from . import business
 from flask_jwt_extended import get_raw_jwt, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from app.models import Business
-from app.view_helpers import validate_email,token_generator
+from app.view_helpers import validate_email, token_generator
 from app.utils import check_blank_key, validate_buss_data_null, require_json, business_filter, business_search
-
-
 
 
 @business.route('/businesses', methods=['GET', 'POST'])
@@ -33,17 +31,23 @@ def registerBusiness():
         category = validate_buss_data_null(data['category'])
         if not location or not description or not name:
             return jsonify(
-                {'message': 'You need a business name and location to Register'}), 403
+                {'message': 'You need a business name' +
+                                ' and location to Register'}), 403
         # Check if business is registered
-        exist_business=Business.query.filter_by(name=name).first()
+        exist_business = Business.query.filter_by(name=name).first()
         if exist_business:
             return jsonify(
                 {'message': 'This Business is already registered'}), 409
 
-        new_business=Business(name=name, description=description, category=category,
-                            location=location, user_id=current_user)
+        new_business = Business(
+            name=name,
+            description=description,
+            category=category,
+            location=location,
+            user_id=current_user)
         new_business.save()
-        current_business=Business.query.filter_by(user_id=current_user).first()
+        current_business = Business.query.filter_by(
+            user_id=current_user).first()
         new_business_id = current_business.id
         new_business_name = current_business.name
 
@@ -55,21 +59,29 @@ def registerBusiness():
 
     # Get all businesses
     all_businesses = Business.get_all(Business)
-    func = lambda business: business.accesible()
+
+    def func(business): return business.accesible()
     all_businesses = map(func, all_businesses)
+    data = list(all_businesses)
+    if data == []:
+        return jsonify({'message': 'No businesses available',
+                        }), 200
     return jsonify({'message': 'These are the businesses',
-                    'businesses': list(all_businesses)
+                    'businesses': data
                     }), 200
 
 
-
-
-@business.route('/businesses/<int:business_id>', methods=['GET', 'PUT', 'DELETE'])
+@business.route(
+    '/businesses/<int:business_id>',
+    methods=[
+        'GET',
+        'PUT',
+        'DELETE'])
 @require_json
 @jwt_required
 def editBusiness(business_id):
     current_user = get_jwt_identity()
-    exist_business=Business.query.filter_by(id=business_id).first()
+    exist_business = Business.query.filter_by(id=business_id).first()
     # Check if business exists
     if not exist_business:
         return jsonify({'message': 'Bussniess does not exist'}), 404
@@ -79,7 +91,8 @@ def editBusiness(business_id):
                         'message': 'Here is the searched business'
                         }), 200
     if current_user != exist_business.user_id:
-        return jsonify({'message': 'You can only change your own business'}), 403
+        return jsonify(
+            {'message': 'You can only change your own business'}), 403
 
     elif request.method == 'DELETE':
         exist_business.delete()
@@ -102,16 +115,16 @@ def editBusiness(business_id):
         return jsonify(
             {'message': 'Business name and Location have to be entred'}), 403
 
-    exist_name_business=Business.query.filter_by(name=name).first()
+    exist_name_business = Business.query.filter_by(name=name).first()
     if exist_name_business:
         return jsonify(
             {'message': 'This Business is name is already used'}), 409
 
     Business.update(Business, current_user, name=name, description=description,
                     location=location, category=category, user_id=current_user)
-    display_business=Business.query.filter_by(user_id=current_user).first()
+    display_business = Business.query.filter_by(name=name).first()
     info = display_business.accesible()
-    return jsonify({'New business': info ,
+    return jsonify({'New business': info,
                     'message': 'Business edited successfully'
                     }), 201
 
@@ -124,11 +137,17 @@ def filtersBusiness():
     except ValueError as error:
         return jsonify({"message": 'Invalid pagination limit or page'})
 
-    func = lambda business: business.accesible()
+    def func(business): return business.accesible()
     result = map(func, result)
-    return jsonify({'Filter result': list(result),
+    data = list(result)
+    if data == []:
+        return jsonify({
+            'message': 'No businesses found'
+        }), 201
+    return jsonify({'Filter result': data,
                     'message': 'Businesses successfully filtered'
                     }), 201
+
 
 @business.route('/businesses/search', methods=['GET'])
 def searchBusiness():
@@ -138,8 +157,13 @@ def searchBusiness():
     except ValueError as error:
         return jsonify({"message": 'Invalid pagination limit or page'})
 
-    func = lambda business: business.accesible()
+    def func(business): return business.accesible()
     result = map(func, result)
-    return jsonify({'Search result': list(result),
+    data = list(result)
+    if data == []:
+        return jsonify({
+            'message': 'No businesses found'
+        }), 201
+    return jsonify({'Search result': data,
                     'message': "Here's the search result"
                     }), 201
