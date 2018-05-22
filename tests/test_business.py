@@ -1,6 +1,6 @@
 """Test case for business view"""
 import json
-from app import create_app, db
+from app import db
 from tests.helper import BaseTestCase
 
 
