@@ -165,6 +165,13 @@ class TestFilterBusiness(BaseTestCase):
         self.assertEqual(result['message'],
                          'Businesses successfully filtered')
 
+    def test_filter_businesses_not_found(self):
+        """Test filter businesses not found"""
+        result = self.filter_business('/api/businesses/filter?' +
+                                                        'category=farming')
+        self.assertEqual(result['message'],
+                         'No businesses found')
+
     def test_filter_business_with_wrong_pagination(self):
         """Test filter business with wrong pagination"""
         result = self.filter_business('/api/businesses/filter?'+
