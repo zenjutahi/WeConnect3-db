@@ -17,6 +17,17 @@ class TestGetReview(BaseTestCase):
         result = json.loads(res.data.decode())
         self.assertTrue(result['message'])
 
+    def test_get_review_for_a_business(self):
+        """Test create review works correcty"""
+        with self.app.app_context():
+            self.reg_data['email'] = 'someonelse@test.com'
+            self.requester_method('/api/auth/register', 'post', data=self.reg_data)
+            self.get_login_token(self.reg_data)
+            self.requester_method('/api/businesses/1/reviews', 'post', data=self.review_data)
+            res = self.client.get('/api/businesses/1/reviews', headers=self.header)
+            result = json.loads(res.data.decode())
+            self.assertTrue(result['message'])
+
 
 
 class TestPostReview(BaseTestCase):
