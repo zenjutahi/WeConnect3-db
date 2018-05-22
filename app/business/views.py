@@ -45,7 +45,7 @@ def registerBusiness():
             user_id=current_user)
         new_business.save()
         current_business = Business.query.filter_by(
-            user_id=current_user).first()
+            name=name).first()
         new_business_id = current_business.id
         new_business_name = current_business.name
 
