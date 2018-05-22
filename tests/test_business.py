@@ -78,7 +78,7 @@ class TestPutBusiness(BaseTestCase):
     def test_empty_name(self):
         """Test create business with space as name"""
         self.business_data['description'] = '   '
-        self.edit_business(code=403, msg='Business name and Location '+
+        self.edit_business(code=403, msg='Business name and Location'+
                                             ' have to be entred')
 
     def test_valid_json_request(self):
