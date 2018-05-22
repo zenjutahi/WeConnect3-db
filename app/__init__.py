@@ -1,4 +1,5 @@
 # third-party imports
+import os
 from flask import jsonify
 from flask_api import FlaskAPI
 from flask_mail import Mail
@@ -71,3 +72,8 @@ def create_app(config_name):
         return blacklist.revoked
 
     return app
+
+
+
+config_name = os.getenv('FLASK_CONFIG')
+app = create_app('development')
