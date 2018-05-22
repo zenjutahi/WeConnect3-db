@@ -37,7 +37,7 @@ class TestPostBusiness(BaseTestCase):
         """Test edit business request is json format"""
         del self.header['Content-Type']
         self.register_business(msg='Bad Request. Request should be JSON format',
-                                                                    code=422)
+                                                                    code=400)
 
 class TestPutBusiness(BaseTestCase):
     """Test for editing business endpoint"""
@@ -85,7 +85,7 @@ class TestPutBusiness(BaseTestCase):
         """Test edit business request is json format"""
         del self.header['Content-Type']
         self.edit_business(msg='Bad Request. Request should be JSON format',
-                                                                    code=422)
+                                                                    code=400)
 
 
 class TestDeleteBusiness(BaseTestCase):
