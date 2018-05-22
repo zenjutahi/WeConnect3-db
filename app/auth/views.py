@@ -41,7 +41,6 @@ def register():
     return jsonify(
         {'message': 'New user Succesfully created'}), 201
 
-
 @auth.route('/login', methods=['POST'])
 @require_json
 def login():
