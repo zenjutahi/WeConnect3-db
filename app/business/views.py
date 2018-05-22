@@ -122,7 +122,7 @@ def editBusiness(business_id):
                     location=location, category=category, user_id=current_user)
     display_business = Business.query.filter_by(name=name).first()
     info = display_business.accesible()
-    return jsonify({'New business': info,
+    return jsonify({'Edited business is': info,
                     'message': 'Business edited successfully'
                     }), 201
 
