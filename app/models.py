@@ -3,8 +3,10 @@ import datetime
 from flask_bcrypt import Bcrypt
 from app import db
 
+
 class MyBaseClass(db.Model):
-    """ MyBaseModel contains common artributes to be inherited my other models """
+    """ MyBaseModel contains common artributes to be,
+       inherited my other models """
     __abstract__ = True
 
     def save(self):
@@ -29,9 +31,11 @@ class MyBaseClass(db.Model):
         row = class_name.query.filter_by(id=row_id).first()
         for column in kwargs:
             if column == 'password':
-                kwargs[column] = Bcrypt().generate_password_hash(kwargs[column]).decode()
+                kwargs[column] = Bcrypt().generate_password_hash(
+                    kwargs[column]).decode()
             setattr(row, column, kwargs[column])
         db.session.commit()
+
 
 class User(MyBaseClass):
     """
@@ -55,7 +59,6 @@ class User(MyBaseClass):
         self.password = Bcrypt().generate_password_hash(password).decode()
         self.register_date = datetime.datetime.now()
 
-
     def verify_password(self, password):
         """
         Check if hashed password matches actual password
@@ -64,7 +67,6 @@ class User(MyBaseClass):
 
     def __repr__(self):
         return '<User: {}>'.format(self.username)
-
 
 
 class Business(MyBaseClass):
@@ -92,15 +94,14 @@ class Business(MyBaseClass):
     def accesible(self):
         """ Returns jsonified data """
         return {
-        "Business name" : self.name,
-        "Business description": self.description,
-        "Business category": self.category,
-        "Business location": self.location
+            "Business name": self.name,
+            "Business description": self.description,
+            "Business category": self.category,
+            "Business location": self.location
         }
 
     def __repr__(self):
         return '<Business: {}>'.format(self.name)
-
 
 
 class Review(MyBaseClass):
@@ -112,7 +113,10 @@ class Review(MyBaseClass):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    business_id = db.Column(db.Integer, db.ForeignKey('businesses.id'), nullable=False)
+    business_id = db.Column(
+        db.Integer,
+        db.ForeignKey('businesses.id'),
+        nullable=False)
     value = db.Column(db.String(200), nullable=False)
     comments = db.Column(db.String(200))
 
@@ -126,8 +130,8 @@ class Review(MyBaseClass):
     def accesible(self):
         """ Returns jsonified data """
         return {
-        "Review value" : self.value,
-        "Review comment": self.comments
+            "Review value": self.value,
+            "Review comment": self.comments
         }
 
     def __repr__(self):
@@ -147,7 +151,7 @@ class TokenBlacklist(MyBaseClass):
     revoked = db.Column(db.Boolean, nullable=False, default=True)
     blacklisted_date = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self,token, user_identity):
+    def __init__(self, token, user_identity):
         """Initialize the review"""
         self.token = token
         self.user_identity = user_identity
