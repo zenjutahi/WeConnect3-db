@@ -81,6 +81,15 @@ class TestLogoutUser(BaseTestCase):
         self.request_logic('/api/auth/logout',data=None, code=200,
                       msg='User Successfully logged out')
 
+    def test_blacklisted_token(self):
+        """Test logged out user has blacklisted token"""
+        self.request_logic('/api/auth/logout',data=None, code=200,
+                      msg='User Successfully logged out')
+
+        res = self.requester_method(url='/api/auth/logout', method='post',
+                                data=None)
+        result = json.loads(res.data.decode())
+        self.assertEqual(result['msg'], 'Token has been revoked')
 
 
 class TestResetPassword(BaseTestCase):
