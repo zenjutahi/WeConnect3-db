@@ -1,6 +1,5 @@
 from flask import request, jsonify
 
-import datetime
 from . import auth
 from flask_jwt_extended import get_raw_jwt, jwt_required, get_jwt_identity
 from flask_mail import Message
