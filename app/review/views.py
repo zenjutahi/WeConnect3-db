@@ -1,12 +1,9 @@
 from flask import request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
 
-import datetime
 from . import review
-from flask_jwt_extended import get_raw_jwt, jwt_required, get_jwt_identity
-from flask_bcrypt import Bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Business, Review
-from app.view_helpers import validate_email, token_generator
+from app.view_helpers import token_generator
 from app.utils import check_blank_key, validate_buss_data_null, require_json
 
 
@@ -52,18 +49,13 @@ def make_businessreview(business_id):
         return jsonify(
             {'message': 'Enter an existing business'}), 409
     all_reviews = Review.get_all(Review)
-    """" using lambda and map """
+    # using lambda and map
     def func(review): return review.accesible(
     ) if review.business_id == business_id else False
     all_reviews = filter(lambda item: item and True, map(func, all_reviews))
     data = list(all_reviews)
     if len(data) == 0:
         return jsonify({'message': 'No review for this business'}), 201
-    # review_list = []
-    # for review in all_reviews:
-    #     if review.business_id == business_id:
-    #         print('there')
-    #         review_info = review.accesible()
-    #         review_list.append(review_info)
+
     return jsonify({'message': 'Reviews for business with id {} are :'.format(
         business_id), 'reviews ': data}), 201
