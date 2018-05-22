@@ -19,7 +19,8 @@ class TestPostBusiness(BaseTestCase):
     def test_empty_name(self):
         """Test create business with space as name"""
         self.business_data['name'] = '   '
-        self.register_business(code=403, msg='You need a business name and location to Register')
+        self.register_business(code=403, msg='You need a business name and' +
+                                                        ' location to Register')
 
     def test_null_name(self):
         """Test create business with space as name"""
@@ -28,13 +29,15 @@ class TestPostBusiness(BaseTestCase):
 
     def test_already_registered_name(self):
         """Test create business with already registered name"""
-        self.register_business(code=409, msg='This Business is already registered')
+        self.register_business(code=409, msg='This Business is' +
+                                                        ' already registered')
 
 
     def test_valid_json_request(self):
         """Test edit business request is json format"""
         del self.header['Content-Type']
-        self.register_business(msg='Bad Request. Request should be JSON format', code=422)
+        self.register_business(msg='Bad Request. Request should be JSON format',
+                                                                    code=422)
 
 class TestPutBusiness(BaseTestCase):
     """Test for editing business endpoint"""
@@ -50,8 +53,9 @@ class TestPutBusiness(BaseTestCase):
     def test_existant_name_for_edited_business(self):
         """Test edit a business with an existant name"""
         self.business_data['name'] = 'a2Z Ict'
-        self.request_logic(url='/api/businesses/1', code=409, data=self.business_data,
-                            method='put', msg='This Business is name is already used')
+        self.request_logic(url='/api/businesses/1', code=409,
+                                    data=self.business_data, method='put',
+                                    msg='This Business is name is already used')
 
     def test_missing_edit_data(self):
         """Test edit business with missing input"""
@@ -60,8 +64,8 @@ class TestPutBusiness(BaseTestCase):
 
     def test_non_existing_business(self):
         """Test edit business that is not available"""
-        self.request_logic(url='/api/businesses/2', data=self.business_data, method='put',
-                       code=404, msg='Bussniess does not exist')
+        self.request_logic(url='/api/businesses/2', data=self.business_data,
+                         method='put',code=404, msg='Bussniess does not exist')
     def test_user_not_logged_in(self):
         """Test delete by unregistered user"""
         with self.app.app_context():
@@ -74,12 +78,14 @@ class TestPutBusiness(BaseTestCase):
     def test_empty_name(self):
         """Test create business with space as name"""
         self.business_data['description'] = '   '
-        self.edit_business(code=403, msg='Business name and Location have to be entred')
+        self.edit_business(code=403, msg='Business name and Location '+
+                                            ' have to be entred')
 
     def test_valid_json_request(self):
         """Test edit business request is json format"""
         del self.header['Content-Type']
-        self.edit_business(msg='Bad Request. Request should be JSON format', code=422)
+        self.edit_business(msg='Bad Request. Request should be JSON format',
+                                                                    code=422)
 
 
 class TestDeleteBusiness(BaseTestCase):
@@ -94,14 +100,15 @@ class TestDeleteBusiness(BaseTestCase):
 
     def test_delete_non_existing_business(self):
         """Test edit business that is not available"""
-        self.request_logic(url='/api/businesses/2', data=self.business_data, method='delete',
-                       code=404, msg='Bussniess does not exist')
+        self.request_logic(url='/api/businesses/2', data=self.business_data,
+                    method='delete', code=404, msg='Bussniess does not exist')
 
     def test_delete_another_user_business(self):
         """Test delete a business that user did not create"""
         with self.app.app_context():
             self.reg_data['email'] = 'anotheruser@test.com'
-            self.requester_method('/api/auth/register', 'post', data=self.reg_data)
+            self.requester_method('/api/auth/register', 'post',
+                                            data=self.reg_data)
             self.get_login_token(self.reg_data)
             self.delete_business(code=403,
                                  msg='You can only change your own business')
@@ -110,8 +117,8 @@ class TestDeleteBusiness(BaseTestCase):
         """Test delete by and None logged in user"""
         with self.app.app_context():
             del self.header['Authorization']
-            res = self.requester_method(url='/api/businesses/1', method='delete',
-                                    data=self.business_data)
+            res = self.requester_method(url='/api/businesses/1',
+                                    method='delete', data=self.business_data)
             result = json.loads(res.data.decode())
             self.assertEqual(result['msg'], 'Missing Authorization Header')
 
@@ -143,7 +150,7 @@ class TestGetBusiness(BaseTestCase):
                                              data=self.reg_data)
             self.get_login_token(self.reg_data)
             result = self.get_business('/api/businesses')
-            self.assertEqual(result['businesses'], [])
+            self.assertEqual(result['message'], 'No businesses available')
 
 class TestFilterBusiness(BaseTestCase):
     """Test for filter business endpoint"""
@@ -153,13 +160,15 @@ class TestFilterBusiness(BaseTestCase):
 
     def test_filter_businesses_by_category(self):
         """Test filter registered businesses by category"""
-        result = self.filter_business('/api/businesses/filter?category=Technology')
+        result = self.filter_business('/api/businesses/filter?' +
+                                                        'category=Technology')
         self.assertEqual(result['message'],
                          'Businesses successfully filtered')
 
     def test_filter_business_with_wrong_pagination(self):
         """Test filter business with wrong pagination"""
-        result = self.filter_business('/api/businesses/filter?category=Technology&page=t')
+        result = self.filter_business('/api/businesses/filter?'+
+                                                'category=Technology&page=t')
         self.assertEqual(result['message'],
                          'Invalid pagination limit or page')
 
@@ -175,6 +184,11 @@ class TestSearchBusiness(BaseTestCase):
         result = self.search_business('/api/businesses/search?q=a2z')
         self.assertEqual(result['message'],
                          "Here's the search result")
+    def test_search_businesses_retuening_none(self):
+        """Test search non-registered businesses"""
+        result = self.search_business('/api/businesses/search?q=jeff')
+        self.assertEqual(result['message'],
+                      "No businesses found")
 
     def test_search_business_with_wrong_pagination(self):
         """Test search business with wrong pagination"""
