@@ -1,6 +1,6 @@
 """Test case for review view"""
 import json
-from app import create_app, db
+from app import db
 from tests.helper import BaseTestCase
 
 class TestGetReview(BaseTestCase):
