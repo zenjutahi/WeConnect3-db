@@ -36,7 +36,7 @@ class TestRegisterUser(BaseTestCase):
     def test_valid_json_request(self):
         """Test register request is json format"""
         del self.header['Content-Type']
-        self.register(msg='Bad Request. Request should be JSON format', code=422)
+        self.register(msg='Bad Request. Request should be JSON format', code=400)
 
 
 class TestLoginUser(BaseTestCase):
@@ -71,7 +71,7 @@ class TestLoginUser(BaseTestCase):
     def test_valid_json_request(self):
         """Test login request is json format"""
         del self.header['Content-Type']
-        self.login(msg='Bad Request. Request should be JSON format', code=422)
+        self.login(msg='Bad Request. Request should be JSON format', code=400)
 
 
 class TestLogoutUser(BaseTestCase):
@@ -126,7 +126,7 @@ class TestResetPassword(BaseTestCase):
         del self.header['Content-Type']
         data = dict(email=self.reg_data['email'])
         self.reset_password(msg='Bad Request. Request should be JSON format',
-                                data=data, code=422)
+                                data=data, code=400)
 
 
 class TestChangetPassword(BaseTestCase):
@@ -158,4 +158,4 @@ class TestChangetPassword(BaseTestCase):
         """Test change password request is json format"""
         del self.header['Content-Type']
         self.change_password(msg='Bad Request. Request should be JSON format',
-                                                         code=422)
+                                                         code=400)
