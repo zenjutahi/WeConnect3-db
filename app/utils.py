@@ -97,5 +97,7 @@ def check_blank_key(data, required_fields):
 
     for field in required_fields:
         if not data.get(field):
+            if field == 'first_name':
+                assert 0, 'First name should not be missing'
             assert 0, field + ' should not be missing'
     return data
