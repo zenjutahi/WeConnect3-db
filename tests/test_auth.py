@@ -33,6 +33,11 @@ class TestRegisterUser(BaseTestCase):
         del self.reg_data['password']
         self.register(msg='password should not be missing', code=422)
 
+    def test_register_missing_first_name(self):
+        """Test user registration with missing first name"""
+        del self.reg_data['first_name']
+        self.register(msg='First name should not be missing', code=422)
+
     def test_valid_json_request(self):
         """Test register request is json format"""
         del self.header['Content-Type']
