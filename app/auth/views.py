@@ -13,7 +13,7 @@ from app.utils import validate_auth_data_null, check_blank_key, require_json
 @require_json
 def register():
     try:
-        required_fields = ['email', 'password', 'username', 'first_name']
+        required_fields = ['first_name', 'username', 'email', 'password']
         data = check_blank_key(request.get_json(), required_fields)
     except AssertionError as err:
         msg = err.args[0]
