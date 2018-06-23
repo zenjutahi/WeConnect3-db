@@ -25,7 +25,7 @@ class TestPostBusiness(BaseTestCase):
     def test_null_name(self):
         """Test create business with space as name"""
         del self.business_data['name']
-        self.register_business(code=422, msg='name should not be missing')
+        self.register_business(code=422, msg='name is required')
 
     def test_already_registered_name(self):
         """Test create business with already registered name"""
@@ -60,7 +60,7 @@ class TestPutBusiness(BaseTestCase):
     def test_missing_edit_data(self):
         """Test edit business with missing input"""
         del self.business_data['category']
-        self.edit_business(code=422, msg='category should not be missing')
+        self.edit_business(code=422, msg='category is required')
 
     def test_non_existing_business(self):
         """Test edit business that is not available"""
