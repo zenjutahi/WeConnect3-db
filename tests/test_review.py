@@ -63,4 +63,4 @@ class TestPostReview(BaseTestCase):
     def test_missing_data(self):
         """Test create review with missing data"""
         del self.review_data['value']
-        self.create_review(code=422, msg='value should not be missing')
+        self.create_review(code=422, msg='value is required')
