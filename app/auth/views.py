@@ -39,7 +39,7 @@ def register():
                     password=password)
     new_user.save()
     return jsonify(
-        {'message': 'New user Succesfully created'}), 201
+        {'message': "{}'s account succesfully created".format(username)}), 201
 
 @auth.route('/login', methods=['POST'])
 @require_json
