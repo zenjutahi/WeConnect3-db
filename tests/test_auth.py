@@ -10,7 +10,8 @@ class TestRegisterUser(BaseTestCase):
     def test_registration(self):
         """Test user registration works correcty"""
         result = json.loads(self.reg_res.data.decode())
-        self.assertEqual(result['message'], "New user Succesfully created")
+        name = self.reg_data['username']
+        self.assertEqual(result['message'], "{}'s account succesfully created".format(name))
         self.assertEqual(self.reg_res.status_code, 201)
 
     def test_already_registered_user(self):
@@ -31,12 +32,12 @@ class TestRegisterUser(BaseTestCase):
     def test_register_missing_password(self):
         """Test user registration with missing password"""
         del self.reg_data['password']
-        self.register(msg='password should not be missing', code=422)
+        self.register(msg='password is required', code=422)
 
     def test_register_missing_first_name(self):
         """Test user registration with missing first name"""
         del self.reg_data['first_name']
-        self.register(msg='First name should not be missing', code=422)
+        self.register(msg='First name is required', code=422)
 
     def test_valid_json_request(self):
         """Test register request is json format"""
@@ -71,7 +72,7 @@ class TestLoginUser(BaseTestCase):
     def test_login_missing_email(self):
         """Test user login with missing email"""
         del self.reg_data['email']
-        self.login(code=422, msg='email should not be missing')
+        self.login(code=422, msg='email is required')
 
     def test_valid_json_request(self):
         """Test login request is json format"""
@@ -124,7 +125,7 @@ class TestResetPassword(BaseTestCase):
     def test_reset_missing_email(self):
         """Test reset password with a missing email address"""
         self.reset_password(data={}, code=422,
-                            msg='email should not be missing')
+                            msg='email is required')
 
     def test_valid_json_request(self):
         """Test reset password request is json format"""
@@ -157,7 +158,7 @@ class TestChangetPassword(BaseTestCase):
     def test_null_passwords(self):
         """Test password with invalid password input"""
         del self.passwords['old_password']
-        self.change_password(code=422, msg='old_password should not be missing')
+        self.change_password(code=422, msg='old_password is required')
 
     def test_valid_json_request(self):
         """Test change password request is json format"""
