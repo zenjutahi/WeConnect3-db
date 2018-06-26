@@ -97,7 +97,8 @@ class Business(MyBaseClass):
             "Business name": self.name,
             "Business description": self.description,
             "Business category": self.category,
-            "Business location": self.location
+            "Business location": self.location,
+            "Businesss id": self.id
         }
 
     def __repr__(self):
