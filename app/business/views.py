@@ -126,6 +126,22 @@ def editBusiness(business_id):
                     'message': 'Business edited successfully'
                     }), 201
 
+@business.route('/businesses/all', methods=['GET'])
+@jwt_required
+def getUserBusiness():
+    current_user = get_jwt_identity()
+    exist_businesses = Business.query.filter_by(user_id=current_user).all()
+    # Check if business exists
+    if not exist_businesses:
+        return jsonify({'message': 'You have not registred business yet'}), 404
+
+    def func(business): return business.accesible()
+    exist_businesses = map(func, exist_businesses)
+    data = list(exist_businesses)
+    return jsonify({'business': data,
+                    'message': 'Your businesses'
+                    }), 200
+
 
 @business.route('/businesses/filter', methods=['GET'])
 def filtersBusiness():
