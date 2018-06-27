@@ -133,7 +133,7 @@ def getUserBusiness():
     exist_businesses = Business.query.filter_by(user_id=current_user).all()
     # Check if business exists
     if not exist_businesses:
-        return jsonify({'message': 'You have not registred business yet'}), 404
+        return jsonify({'message': 'You have not registred business yet'}), 200
 
     def func(business): return business.accesible()
     exist_businesses = map(func, exist_businesses)
