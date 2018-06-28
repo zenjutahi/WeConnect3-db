@@ -3,6 +3,7 @@ import os
 from flask import jsonify
 from flask_api import FlaskAPI
 from flask_mail import Mail
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
     JWTManager)
@@ -12,6 +13,7 @@ from instance.config import app_config
 db = SQLAlchemy()
 jwt = JWTManager()
 mail = Mail()
+cors = CORS()
 
 
 # Initialize the app
@@ -25,6 +27,7 @@ def create_app(config_name):
     db.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
+    cors.init_app(app)
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/api/auth')

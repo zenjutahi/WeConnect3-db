@@ -16,6 +16,7 @@ docopt==0.6.2
 Flask==0.12.2
 Flask-API==1.0
 Flask-Bcrypt==0.7.1
+Flask-Cors==3.0.6
 Flask-JWT-Extended==3.7.2
 Flask-Mail==0.9.1
 Flask-Migrate==2.1.1
