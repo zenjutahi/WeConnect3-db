@@ -118,7 +118,7 @@ def editBusiness(business_id):
         return jsonify(
             {'message': 'This Business is name is already used'}), 409
 
-    Business.update(Business, current_user, name=name, description=description,
+    Business.update(Business, business_id, name=name, description=description,
                     location=location, category=category, user_id=current_user)
     display_business = Business.query.filter_by(name=name).first()
     info = display_business.accesible()
