@@ -47,7 +47,9 @@ install flask and dependancies
 ____
 ## Running the tests
 
-Running Tests usin pytext
+Running Tests using nosetests
+
+Run the command `nosetests --exe -v --with-coverage --cover-package=app`
 
 ____
 ### And coding style tests
