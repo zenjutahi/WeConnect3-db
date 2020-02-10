@@ -15,8 +15,8 @@ class Config(object):
     JWT_BLACKLIST_ENABLED = True
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 465
+    MAIL_SERVER = 'smtp-relay.sendinblue.com'
+    MAIL_PORT = 587
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('EMAIL')
     MAIL_PASSWORD = os.environ.get('PASSWORD')
